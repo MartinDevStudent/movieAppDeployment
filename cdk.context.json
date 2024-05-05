@@ -1,0 +1,14 @@
+{
+  "hosted-zone:account=913877976938:domainName=stormit.link:region=eu-west-1": {
+    "Id": "/hostedzone/Z022048913NRM4QHTLA9J",
+    "Name": "stormit.link."
+  },
+  "hosted-zone:account=517039770760:domainName=diarmuidoconnor.com:region=eu-west-1": {
+    "Id": "/hostedzone/Z2KYNO3CK6Q4AP",
+    "Name": "diarmuidoconnor.com."
+  },
+  "hosted-zone:account=517039770760:domainName=diarmuidoconnor.com:region=us-east-1": {
+    "Id": "/hostedzone/Z2KYNO3CK6Q4AP",
+    "Name": "diarmuidoconnor.com."
+  }
+}
