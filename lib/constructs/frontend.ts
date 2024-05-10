@@ -7,7 +7,7 @@ import * as cloudfront_origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import { CfnOutput, Duration, RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { Domain} from '../../env'
+import { Domain } from "../../env";
 
 interface FrontendProps {
   apiUrl?: string;
@@ -65,7 +65,7 @@ export class FrontendApp extends Construct {
 
     const config = {
       apiUrl: props.apiUrl,
-      authUrl: props.authUrl
+      authUrl: props.authUrl,
     };
 
     new s3deploy.BucketDeployment(this, "DeployWebsite", {
