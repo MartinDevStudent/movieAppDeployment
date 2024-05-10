@@ -5,7 +5,6 @@ import {
   NodejsFunctionProps,
 } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
-// import { LambdaIntegration, RestApi, Cors } from "aws-cdk-lib/aws-apigateway";
 import * as apig from "aws-cdk-lib/aws-apigateway";
 
 import * as cdk from "aws-cdk-lib";
@@ -96,7 +95,14 @@ export class APIApp extends Construct {
       }
     );
 
+    const postReviewFn = new NodejsFunction(this, "PostReviewFn", {
+      ...appCommonFnProps,
+      entry: `${__dirname}/../../lambdas/postReview.ts`,
+    });
+
     movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
+    movieReviewsTable.grantReadData(postReviewFn);
+    movieReviewsTable.grantWriteData(postReviewFn);
 
     // REST API
     const api = new apig.RestApi(this, "DemoAPI", {
@@ -127,6 +133,10 @@ export class APIApp extends Construct {
     reviewsByMovieIdEndpoint.addMethod(
       "GET",
       new apig.LambdaIntegration(getReviewsByMovieIdFn)
+    );
+    reviewsByMovieIdEndpoint.addMethod(
+      "POST",
+      new apig.LambdaIntegration(postReviewFn)
     );
 
     this.apiUrl = api.url;
