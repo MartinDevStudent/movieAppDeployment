@@ -25,7 +25,7 @@ export class APIApp extends Construct {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       partitionKey: { name: "movieId", type: dynamodb.AttributeType.NUMBER },
       sortKey: { name: "reviewerName", type: dynamodb.AttributeType.STRING },
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
       tableName: "MovieReviews",
     });
 

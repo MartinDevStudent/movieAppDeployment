@@ -9,6 +9,7 @@ export function NotFound(message: string): HttpResponse {
     statusCode: 404,
     headers: {
       "content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ Message: message }),
   };
@@ -19,6 +20,7 @@ export function Ok(data: any): HttpResponse {
     statusCode: 200,
     headers: {
       "content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ data: data }),
   };
@@ -29,6 +31,7 @@ export function ServerError(error: any): HttpResponse {
     statusCode: 500,
     headers: {
       "content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ error }),
   };
@@ -39,6 +42,7 @@ export function SchemaError(schemaDefinition: any): HttpResponse {
     statusCode: 500,
     headers: {
       "content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({
       message: `Incorrect type. Must match Query parameters schema`,
@@ -52,6 +56,7 @@ export function BadRequest(message: string): HttpResponse {
     statusCode: 404,
     headers: {
       "content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
     body: JSON.stringify({ Message: message }),
   };
