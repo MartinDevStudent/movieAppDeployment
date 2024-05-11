@@ -17,6 +17,98 @@
             ],
             "type": "object"
         },
+        "CreateMovieReviewRequest": {
+            "additionalProperties": false,
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "movieId": {
+                    "type": "number"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "reviewerName": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content",
+                "movieId",
+                "rating",
+                "reviewerName"
+            ],
+            "type": "object"
+        },
+        "FantasyMovie": {
+            "additionalProperties": false,
+            "properties": {
+                "duration": {
+                    "type": "number"
+                },
+                "fantasyMovieId": {
+                    "type": "number"
+                },
+                "genre": {
+                    "type": "number"
+                },
+                "overview": {
+                    "type": "string"
+                },
+                "productionCompany": {
+                    "type": "string"
+                },
+                "releaseDate": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "duration",
+                "fantasyMovieId",
+                "genre",
+                "overview",
+                "productionCompany",
+                "releaseDate",
+                "title"
+            ],
+            "type": "object"
+        },
+        "FantasyMovieRequest": {
+            "additionalProperties": false,
+            "properties": {
+                "duration": {
+                    "type": "number"
+                },
+                "genre": {
+                    "type": "number"
+                },
+                "overview": {
+                    "type": "string"
+                },
+                "productionCompany": {
+                    "type": "string"
+                },
+                "releaseDate": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "duration",
+                "genre",
+                "overview",
+                "productionCompany",
+                "releaseDate",
+                "title"
+            ],
+            "type": "object"
+        },
         "MovieReview": {
             "additionalProperties": false,
             "properties": {
@@ -99,6 +191,18 @@
             },
             "required": [
                 "language"
+            ],
+            "type": "object"
+        },
+        "UpdateMovieReviewRequest": {
+            "additionalProperties": false,
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content"
             ],
             "type": "object"
         }

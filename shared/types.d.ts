@@ -40,3 +40,22 @@ export type CreateMovieReviewRequest = {
 export type UpdateMovieReviewRequest = {
   content: string;
 };
+
+export type FantasyMovieRequest = {
+  title: string;
+  overview: string;
+  releaseDate: string;
+  duration: number;
+  productionCompany: string;
+  genre: number;
+};
+
+export type FantasyMovie = {
+  fantasyMovieId: number;
+  title: string;
+  overview: string;
+  releaseDate: string;
+  duration: number;
+  productionCompany: string;
+  genre: number;
+};

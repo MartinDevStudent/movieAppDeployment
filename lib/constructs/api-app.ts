@@ -1,5 +1,4 @@
-import { Duration, RemovalPolicy } from "aws-cdk-lib";
-import { Architecture, Runtime } from "aws-cdk-lib/aws-lambda";
+import { RemovalPolicy } from "aws-cdk-lib";
 import {
   NodejsFunction,
   NodejsFunctionProps,
@@ -27,6 +26,16 @@ export class APIApp extends Construct {
       sortKey: { name: "reviewerName", type: dynamodb.AttributeType.STRING },
       removalPolicy: RemovalPolicy.DESTROY,
       tableName: "MovieReviews",
+    });
+
+    const fantasyMoviesTable = new dynamodb.Table(this, "FantasyMoviesTable", {
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: "username",
+        type: dynamodb.AttributeType.STRING,
+      },
+      removalPolicy: RemovalPolicy.DESTROY,
+      tableName: "FantasyMovies",
     });
 
     movieReviewsTable.addGlobalSecondaryIndex({
@@ -77,15 +86,6 @@ export class APIApp extends Construct {
       },
     };
 
-    // Lambdas
-    const demoFn = new NodejsFunction(this, "RESTEndpointFn", {
-      architecture: Architecture.ARM_64,
-      runtime: Runtime.NODEJS_18_X,
-      entry: `${__dirname}/../../lambdas/demo.ts`,
-      timeout: Duration.seconds(10),
-      memorySize: 128,
-    });
-
     const getReviewsByMovieIdFn = new NodejsFunction(
       this,
       "GetReviewsByMovieIdFn",
@@ -100,9 +100,30 @@ export class APIApp extends Construct {
       entry: `${__dirname}/../../lambdas/postReview.ts`,
     });
 
+    const getFantasyMoviesFn = new NodejsFunction(this, "GetFantasyMoviesFn", {
+      ...appCommonFnProps,
+      entry: `${__dirname}/../../lambdas/getFantasyMovies.ts`,
+      environment: {
+        TABLE_NAME: fantasyMoviesTable.tableName,
+        REGION: "eu-west-1",
+      },
+    });
+
+    const postFantasyMovieFn = new NodejsFunction(this, "PostFantastMovieFn", {
+      ...appCommonFnProps,
+      entry: `${__dirname}/../../lambdas/postFantasyMovie.ts`,
+      environment: {
+        TABLE_NAME: fantasyMoviesTable.tableName,
+        REGION: "eu-west-1",
+      },
+    });
+
     movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
     movieReviewsTable.grantReadData(postReviewFn);
     movieReviewsTable.grantWriteData(postReviewFn);
+
+    fantasyMoviesTable.grantReadData(getFantasyMoviesFn);
+    fantasyMoviesTable.grantWriteData(postFantasyMovieFn);
 
     // REST API
     const api = new apig.RestApi(this, "DemoAPI", {
@@ -120,12 +141,6 @@ export class APIApp extends Construct {
       },
     });
 
-    const todoEndpoint = api.root.addResource("todos");
-    todoEndpoint.addMethod(
-      "GET",
-      new apig.LambdaIntegration(demoFn, { proxy: true }) // AWSIntegration
-    );
-
     const moviesEndpoint = api.root.addResource("movies");
     const movieIdEndpoint = moviesEndpoint.addResource("{movieId}");
 
@@ -138,6 +153,12 @@ export class APIApp extends Construct {
       "POST",
       new apig.LambdaIntegration(postReviewFn)
     );
+
+    const fantasyMoviesEndpoint = api.root.addResource("fantasyMovies");
+    const username = fantasyMoviesEndpoint.addResource("{username}");
+
+    username.addMethod("GET", new apig.LambdaIntegration(getFantasyMoviesFn));
+    username.addMethod("POST", new apig.LambdaIntegration(postFantasyMovieFn));
 
     this.apiUrl = api.url;
   }
