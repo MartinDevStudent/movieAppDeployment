@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { Ok, SchemaError, ServerError } from "/opt/custom-code/httpResponses";
+import { Ok, SchemaError, ServerError } from "./shared/httpResponses";
 import { isValid } from "../shared/validator";
 
 const schema = require("../shared/types.schema.json");
