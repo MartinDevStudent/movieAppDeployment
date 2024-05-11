@@ -34,6 +34,7 @@ export class APIApp extends Construct {
         name: "username",
         type: dynamodb.AttributeType.STRING,
       },
+      sortKey: { name: "title", type: dynamodb.AttributeType.STRING },
       removalPolicy: RemovalPolicy.DESTROY,
       tableName: "FantasyMovies",
     });
