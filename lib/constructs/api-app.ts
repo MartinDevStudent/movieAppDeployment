@@ -28,17 +28,6 @@ export class APIApp extends Construct {
       tableName: "MovieReviews",
     });
 
-    const fantasyMoviesTable = new dynamodb.Table(this, "FantasyMoviesTable", {
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      partitionKey: {
-        name: "username",
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: { name: "title", type: dynamodb.AttributeType.STRING },
-      removalPolicy: RemovalPolicy.DESTROY,
-      tableName: "FantasyMovies",
-    });
-
     movieReviewsTable.addGlobalSecondaryIndex({
       partitionKey: {
         name: "Id",
@@ -55,6 +44,17 @@ export class APIApp extends Construct {
     movieReviewsTable.addLocalSecondaryIndex({
       indexName: "ratingIx",
       sortKey: { name: "rating", type: dynamodb.AttributeType.NUMBER },
+    });
+
+    const fantasyMoviesTable = new dynamodb.Table(this, "FantasyMoviesTable", {
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: "username",
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: { name: "title", type: dynamodb.AttributeType.STRING },
+      removalPolicy: RemovalPolicy.DESTROY,
+      tableName: "FantasyMovies",
     });
 
     new custom.AwsCustomResource(this, "movieReviewsddbInitData", {
@@ -119,12 +119,26 @@ export class APIApp extends Construct {
       },
     });
 
+    const deleteFantasyMovieFn = new NodejsFunction(
+      this,
+      "DeleteFantasyMovieFn",
+      {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../../lambdas/deleteFantasyMovie.ts`,
+        environment: {
+          TABLE_NAME: fantasyMoviesTable.tableName,
+          REGION: "eu-west-1",
+        },
+      }
+    );
+
     movieReviewsTable.grantReadData(getReviewsByMovieIdFn);
     movieReviewsTable.grantReadData(postReviewFn);
     movieReviewsTable.grantWriteData(postReviewFn);
 
     fantasyMoviesTable.grantReadData(getFantasyMoviesFn);
     fantasyMoviesTable.grantWriteData(postFantasyMovieFn);
+    fantasyMoviesTable.grantWriteData(deleteFantasyMovieFn);
 
     // REST API
     const api = new apig.RestApi(this, "DemoAPI", {
@@ -160,6 +174,12 @@ export class APIApp extends Construct {
 
     username.addMethod("GET", new apig.LambdaIntegration(getFantasyMoviesFn));
     username.addMethod("POST", new apig.LambdaIntegration(postFantasyMovieFn));
+
+    const fantasyMovieTitle = username.addResource("{title}");
+    fantasyMovieTitle.addMethod(
+      "DELETE",
+      new apig.LambdaIntegration(deleteFantasyMovieFn)
+    );
 
     this.apiUrl = api.url;
   }

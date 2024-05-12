@@ -1,5 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  DeleteCommand,
+  DeleteCommandInput,
+  DeleteCommandOutput,
   DynamoDBDocumentClient,
   GetCommand,
   GetCommandInput,
@@ -65,4 +68,10 @@ export async function sendUpdate(
   commandInput: UpdateCommandInput
 ): Promise<UpdateCommandOutput> {
   return await ddbDocClient.send(new UpdateCommand(commandInput));
+}
+
+export async function sendDelete(
+  commandInput: DeleteCommandInput
+): Promise<DeleteCommandOutput> {
+  return await ddbDocClient.send(new DeleteCommand(commandInput));
 }
